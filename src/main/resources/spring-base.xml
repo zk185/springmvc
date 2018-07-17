@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <!--加载数据库配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!--配置数据库 使用alibaba数据库连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!--配置数据库基础属性-->
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!--配置初始化、最小、最大连接数-->
+        <property name="initialSize" value="10"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxActive" value="30"/>
+
+        <!--配置获取链接等待超时时间-->
+        <property name="maxWait" value="5000"/>
+        <!--非公平锁，提高并发-->
+        <property name="useUnfairLock" value="true"/>
+
+        <!--配置心跳 检测需要关闭的空闲链接-->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+
+        <!--链接在连接池中最小生存时间-->
+        <property name="minEvictableIdleTimeMillis" value="60000"/>
+
+        <!--检测链接是否有效-->
+        <property name="validationQuery" value="SELECT 1"/>
+
+        <!--建议配置为true，不影响性能，并且保证安全性。
+        申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，
+        执行validationQuery检测连接是否有效。-->
+        <property name="testWhileIdle" value="true" />
+        <!--申请连接时执行validationQuery检测连接是否有效,设置true会降低性能
+        这里设置为true防止取到的链接不可用-->
+        <property name="testOnBorrow" value="true" />
+        <!--归还连接时执行validationQuery检测连接是否有效,设置true会降低性能-->
+        <property name="testOnReturn" value="false" />
+
+        <!--配置数据库监控界面-->
+        <property name="filters" value="stat" />
+        <property name="proxyFilters">
+            <list>
+                <ref bean="logFilter" />
+            </list>
+        </property>
+    </bean>
+    <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
+        <property name="statementExecutableSqlLogEnable" value="false" />
+    </bean>
+</beans>
