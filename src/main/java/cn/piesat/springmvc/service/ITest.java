@@ -1,5 +1,7 @@
 package cn.piesat.springmvc.service;
 
+import cn.piesat.springmvc.entity.TUser;
+
 public interface ITest {
-    String test();
+    TUser test(Integer id);
 }
