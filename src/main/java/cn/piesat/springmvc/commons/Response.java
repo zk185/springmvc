@@ -19,10 +19,9 @@ public class Response {
 	private String api;
 	private Object data = null;
 	private Map<String,Object> detailsMap;
-	
-	private static final Response response = new Response();
-	
+
 	public static Response getInstance(){
+		Response response = new Response();
 		return response;
 	}
 	
